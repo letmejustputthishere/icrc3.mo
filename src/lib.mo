@@ -58,10 +58,12 @@ module {
   public type Stats = MigrationTypes.Current.Stats;
   public type TransactionRange = MigrationTypes.Current.TransactionRange;
   public type GetTransactionsResult = MigrationTypes.Current.GetTransactionsResult;
-  public type DataCertificate = MigrationTypes.Current.DataCertificate;
+  public type GetBlocksArgs = Service.GetBlocksArgs;
+  public type GetBlocksResult = Service.GetBlocksResult;
+  public type DataCertificate = Service.DataCertificate;
   public type Tip = MigrationTypes.Current.Tip;
-  public type GetArchivesArgs = MigrationTypes.Current.GetArchivesArgs;
-  public type GetArchivesResult = MigrationTypes.Current.GetArchivesResult;
+  public type GetArchivesArgs = Service.GetArchivesArgs;
+  public type GetArchivesResult = Service.GetArchivesResult;
   public type GetArchivesResultItem = MigrationTypes.Current.GetArchivesResultItem;
 
   /// Represents the IC actor
@@ -655,7 +657,7 @@ module {
     ///
     /// Returns:
     /// - The result of getting transactions
-    public func get_transactions(args: TransactionRange) : MigrationTypes.Current.GetTransactionsResult{
+    public func get_blocks(args: GetBlocksArgs) : GetBlocksResult{
 
       debug if(debug_channel.get_transactions) D.print("get_transaction_states" # debug_show(stats()));
       let local_ledger_length = Vec.size(state.ledger);
@@ -668,7 +670,7 @@ module {
       debug if(debug_channel.get_transactions) D.print("have ledger length" # debug_show(ledger_length));
 
       //get the transactions on this canister
-      let vec = Vec.new<TransactionTypes>();
+      let transactions = Vec.new<TransactionTypes>();
       debug if(debug_channel.get_transactions) D.print("setting start " # debug_show(args.start + args.length, state.firstIndex));
       if(args.start + args.length > state.firstIndex){
         debug if(debug_channel.get_transactions) D.print("setting start " # debug_show(args.start + args.length, state.firstIndex));
@@ -700,7 +702,7 @@ module {
             if(thisItem >= Vec.size(state.ledger)){
               break search;
             };
-            Vec.add(vec, {
+            Vec.add(transactions, {
                 id = state.firstIndex + thisItem;
                 transaction = Vec.get(state.ledger, thisItem)
             });
@@ -751,7 +753,7 @@ module {
       return {
         log_length = ledger_length;
         certificate = CertifiedData.getCertificate(); //will be null in update calls
-        blocks = Vec.toArray(vec);
+        blocks = Vec.toArray(transactions);
         archived_blocks = Vec.toArray(archives);
       }
     };

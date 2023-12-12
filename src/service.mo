@@ -2,13 +2,11 @@
 // Please use `import service "ic:canister_id"` instead to call canisters on the IC if possible.
 
 module {
-  public type DataCertificate = { certificate : [Nat8]; hash_tree : [Nat8] };
+  public type DataCertificate = { certificate : Blob; hash_tree : Blob };
   public type GetArchivesArgs = { from : ?Principal };
-  public type GetArchivesResult = {
-    end : Nat;
-    canister_id : Principal;
-    start : Nat;
-  };
+  public type GetArchivesResult = [
+    { end : Nat; canister_id : Principal; start : Nat }
+  ];
   public type GetBlocksArgs = [{ start : Nat; length : Nat }];
   public type GetBlocksResult = {
     log_length : Nat;
@@ -24,7 +22,7 @@ module {
     #Int : Int;
     #Map : [(Text, Value)];
     #Nat : Nat;
-    #Blob : [Nat8];
+    #Blob : Blob;
     #Text : Text;
     #Array : [Value];
   };
