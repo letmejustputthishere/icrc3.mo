@@ -30,6 +30,7 @@ import SW "mo:stable-write-only";
 import HelperLib "helper";
 import CertTree "mo:cert/CertTree";
 import MTree "mo:cert/MerkleTree";
+import Service "service";
 
 module {
 
@@ -66,6 +67,9 @@ module {
   /// Represents the IC actor
   public type IC = MigrationTypes.Current.IC;
 
+  /// The service definition for ICRC3
+  /// https://github.com/dfinity/ICRC-1/tree/icrc-3/standards/ICRC-3
+  public type Service = Service.Value;
 
   /// Represents the environment object passed to the ICRC3 class
   public type Environment = ?{
